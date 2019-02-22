@@ -19,6 +19,10 @@ use yii\web\IdentityInterface;
  */
 class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    const SCENARIO_CREATE = 'create';
+
+    public $password_repeat;
+
     /**
      * {@inheritdoc}
      */
@@ -34,12 +38,19 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['nombre', 'password', 'email'], 'required'],
-            [['created_at'], 'safe'],
-            [['nombre', 'token'], 'string', 'max' => 32],
-            [['password'], 'string', 'max' => 60],
+            [['nombre'], 'string', 'max' => 32],
+            [['nombre', 'email'], 'unique'],
             [['email'], 'string', 'max' => 255],
-            [['nombre'], 'unique'],
+            [['email'], 'email'],
+            [['password', 'password_repeat'], 'string'],
+            [['password'], 'compare', 'on' => self::SCENARIO_CREATE],
+            [['password_repeat'], 'required', 'on' => self::SCENARIO_CREATE],
         ];
+    }
+
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['password_repeat']);
     }
 
     /**
@@ -50,7 +61,8 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
         return [
             'id' => 'ID',
             'nombre' => 'Nombre',
-            'password' => 'Password',
+            'password' => 'Contraseña',
+            'password_repeat' => 'Confirmar contraseña',
             'email' => 'Email',
             'created_at' => 'Created At',
             'token' => 'Token',
@@ -130,5 +142,19 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if ($insert && $this->scenario === self::SCENARIO_CREATE) {
+            $this->password = Yii::$app->security->generatePasswordHash($this->password);
+            $this->token = Yii::$app->security->generateRandomString();
+        }
+
+        return true;
     }
 }
