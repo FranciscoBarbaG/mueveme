@@ -13,18 +13,11 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'titulo')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'enlace')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'cuerpo')->textarea(['rows' => 6]) ?>
-
     <?= $form->field($model, 'categoria_id')->textInput() ?>
-
     <?= $form->field($model, 'usuario_id')->textInput() ?>
-
-    <?= $form->field($model, 'movimientos')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
+    <?= $form->field($model, 'imagen')->fileInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
