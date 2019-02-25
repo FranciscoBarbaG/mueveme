@@ -6,6 +6,7 @@ use app\models\Noticias;
 use app\models\NoticiasSearch;
 use Yii;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -116,7 +117,7 @@ class NoticiasController extends Controller
         $noticia = $this->findModel($id);
         $noticia->movimientos++;
         $noticia->save();
-        return $noticia->movimientos;
+        return Html::encode($noticia->movimientos);
     }
 
     /**
