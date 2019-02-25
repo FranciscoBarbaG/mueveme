@@ -21,6 +21,8 @@ use Yii;
  */
 class Noticias extends \yii\db\ActiveRecord
 {
+    public $imagen;
+
     /**
      * {@inheritdoc}
      */
@@ -37,12 +39,12 @@ class Noticias extends \yii\db\ActiveRecord
         return [
             [['titulo', 'enlace', 'cuerpo', 'categoria_id', 'usuario_id'], 'required'],
             [['cuerpo'], 'string'],
-            [['categoria_id', 'usuario_id', 'movimientos'], 'default', 'value' => null],
-            [['categoria_id', 'usuario_id', 'movimientos'], 'integer'],
-            [['created_at'], 'safe'],
+            [['categoria_id', 'usuario_id'], 'default', 'value' => null],
+            [['categoria_id', 'usuario_id', '!movimientos'], 'integer'],
             [['titulo', 'enlace'], 'string', 'max' => 255],
             [['categoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categorias::className(), 'targetAttribute' => ['categoria_id' => 'id']],
             [['usuario_id'], 'exist', 'skipOnError' => true, 'targetClass' => Usuarios::className(), 'targetAttribute' => ['usuario_id' => 'id']],
+            [['imagen'], 'file', 'extensions' => 'jpg'],
         ];
     }
 
@@ -63,6 +65,11 @@ class Noticias extends \yii\db\ActiveRecord
         ];
     }
 
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['imagen']);
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -77,5 +84,19 @@ class Noticias extends \yii\db\ActiveRecord
     public function getUsuario()
     {
         return $this->hasOne(Usuarios::className(), ['id' => 'usuario_id'])->inverseOf('noticias');
+    }
+
+    /**
+     * Devuelve la URL de la imagen de la noticia.
+     * @return ?string La URL de la noticia, o null si no tiene
+     */
+    public function getUrlImagen()
+    {
+        return $this->tieneImagen() ? Yii::getAlias('@uploadsUrl/' . $this->id . '.jpg') : null;
+    }
+
+    public function tieneImagen()
+    {
+        return file_exists(Yii::getAlias('@uploads/' . $this->id . '.jpg'));
     }
 }

@@ -28,8 +28,10 @@ EOT;
 $this->registerJs($js);
 ?>
 
-<div class="panel panel-primary">
-    <div class="panel-heading"><?= $model->titulo ?></div>
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <?= Html::a($model->titulo, $model->enlace) ?>
+    </div>
     <div class="panel-body">
         <div class="media-left text-center">
             <?= Html::button('Movimientos', ['class' => 'btn-primary boton', 'id' => 'boton-' . $model->id, 'data-key' => $model->id]) ?>
@@ -41,5 +43,10 @@ $this->registerJs($js);
                 <?= $formatter->asHtml($model->cuerpo) ?>
             </p>
         </div>
+        <?php if ($model->tieneImagen()): ?>
+            <div class="media-right">
+                <?= Html::img($model->urlImagen) ?>
+            </div>
+        <?php endif ?>
     </div>
 </div>
