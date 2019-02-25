@@ -146,6 +146,14 @@ EOT;
         return $this->redirect(['site/index']);
     }
 
+    public function actionBanear($id)
+    {
+        $usuario = $this->findModel($id);
+        $usuario->banned_at = empty($usuario->banned_at) ? date('Y-m-d H:i:s') : null;
+        $usuario->save();
+        return $this->redirect(['usuarios/index']);
+    }
+
     /**
      * Finds the Usuarios model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
