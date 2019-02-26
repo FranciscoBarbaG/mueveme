@@ -166,7 +166,15 @@ EOT;
                 ->add(new \DateInterval('P2D'))
                 ->format('Y-m-d H:i:s') : null;
         $usuario->save();
-        return Yii::$app->formatter->asBoolean($usuario->banned_at ?? false);
+
+        $searchModel = new UsuariosSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->sort->route = 'usuarios/index';
+
+        return $this->renderAjax('_rejilla', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**
