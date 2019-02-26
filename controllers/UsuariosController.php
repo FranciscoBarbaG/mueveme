@@ -149,7 +149,10 @@ EOT;
     public function actionBanear($id)
     {
         $usuario = $this->findModel($id);
-        $usuario->banned_at = empty($usuario->banned_at) ? date('Y-m-d H:i:s') : null;
+        $usuario->banned_at = empty($usuario->banned_at) ?
+            (new \DateTime())
+                ->add(new \DateInterval('P2D'))
+                ->format('Y-m-d H:i:s') : null;
         $usuario->save();
         return $this->redirect(['usuarios/index']);
     }
