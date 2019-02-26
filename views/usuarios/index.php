@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -9,6 +10,26 @@ use yii\grid\GridView;
 
 $this->title = 'Usuarios';
 $this->params['breadcrumbs'][] = $this->title;
+$url = Url::to(['usuarios/banear-ajax']);
+$js = <<<EOT
+    $('.baneo').click(function (event) {
+        event.preventDefault();
+        var el = $(this);
+        var res = window.confirm('¿Seguro que desea banear a ese usuario?');
+        var id = el.parents('tr').data('key');
+        if (res) {
+            $.ajax({
+                url: '$url',
+                method: 'POST',
+                data: { id: id },
+                success: function (data) {
+                    el.parent().siblings('.valorbaneo').html(data);
+                }
+            });
+        }
+    });
+EOT;
+$this->registerJs($js);
 ?>
 <div class="usuarios-index">
 
@@ -26,7 +47,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'nombre',
             'email:email',
             'created_at:datetime',
-            'baneado:boolean',
+            [
+                'attribute' => 'baneado',
+                'format' => 'boolean',
+                'contentOptions' => ['class' => 'valorbaneo'],
+            ],
+            // 'baneado:boolean',
             //'token',
 
             [
@@ -38,8 +64,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'Banear',
                             ['usuarios/banear', 'id' => $model->id],
                             [
-                                'data-method' => 'POST',
-                                'data-confirm' => '¿Seguro que desea banear a ese usuario?'
+                                'class' => 'baneo',
+                                // 'data-method' => 'POST',
+                                // 'data-confirm' => '¿Seguro que desea banear a ese usuario?'
                             ]);
                     },
                 ],

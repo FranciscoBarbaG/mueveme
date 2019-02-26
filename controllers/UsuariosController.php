@@ -157,6 +157,18 @@ EOT;
         return $this->redirect(['usuarios/index']);
     }
 
+    public function actionBanearAjax()
+    {
+        $id = Yii::$app->request->post('id');
+        $usuario = $this->findModel($id);
+        $usuario->banned_at = empty($usuario->banned_at) ?
+            (new \DateTime())
+                ->add(new \DateInterval('P2D'))
+                ->format('Y-m-d H:i:s') : null;
+        $usuario->save();
+        return Yii::$app->formatter->asBoolean($usuario->banned_at ?? false);
+    }
+
     /**
      * Finds the Usuarios model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
