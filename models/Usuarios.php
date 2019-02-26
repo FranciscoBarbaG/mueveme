@@ -22,6 +22,7 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     const SCENARIO_CREATE = 'create';
 
     public $password_repeat;
+    private $_baneado;
 
     /**
      * {@inheritdoc}
@@ -156,5 +157,15 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
         }
 
         return true;
+    }
+
+    public function getBaneado()
+    {
+        return $this->_baneado;
+    }
+
+    public function afterFind()
+    {
+        $this->_baneado = !empty($this->banned_at);
     }
 }

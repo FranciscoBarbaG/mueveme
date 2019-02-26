@@ -11,6 +11,7 @@ CREATE TABLE usuarios
   , password   VARCHAR(60)  NOT NULL
   , email      VARCHAR(255) NOT NULL UNIQUE
   , created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+  , banned_at  TIMESTAMP
   , token      VARCHAR(32)
 );
 

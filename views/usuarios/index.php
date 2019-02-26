@@ -23,16 +23,27 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
             'nombre',
-            'password',
             'email:email',
-            'created_at',
+            'created_at:datetime',
+            'baneado:boolean',
             //'token',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view} {update} {delete} {ban}',
+                'buttons' => [
+                    'ban' => function ($url, $model, $key) {
+                        return Html::a(
+                            'Banear',
+                            ['usuarios/banear', 'id' => $model->id],
+                            [
+                                'data-method' => 'POST',
+                                'data-confirm' => '¿Seguro que desea banear a ese usuario?'
+                            ]);
+                    },
+                ],
+            ],
         ],
     ]); ?>
 </div>
