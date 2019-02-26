@@ -72,7 +72,7 @@ class LoginForm extends Model
         if ($this->validate()) {
             $user = $this->getUsuarios();
             if ($user->banned_at !== null) {
-                if ((new \DateTime()) > \DateTime::createFromFormat('Y-m-d H:i:s', $user->banned_at)) {
+                if ($user->desbaneable()) {
                     $user->banned_at = null;
                     $user->save(false);
                 } else {
