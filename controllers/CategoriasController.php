@@ -2,12 +2,12 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Categorias;
 use app\models\CategoriasSearch;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * CategoriasController implements the CRUD actions for Categorias model.
@@ -46,7 +46,7 @@ class CategoriasController extends Controller
 
     /**
      * Displays a single Categorias model.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -78,7 +78,7 @@ class CategoriasController extends Controller
     /**
      * Updates an existing Categorias model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -98,7 +98,7 @@ class CategoriasController extends Controller
     /**
      * Deletes an existing Categorias model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -109,10 +109,20 @@ class CategoriasController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionBuscarAjax()
+    {
+        $searchModel = new CategoriasSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->renderAjax('_rejilla', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     /**
      * Finds the Categorias model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param int $id
      * @return Categorias the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
